@@ -1,15 +1,9 @@
 import java.awt.*;
 
-public class Cell {
-	
-	private int x;
-	private int y;
-	private int width = 35;
-	private int height = 35;
+public class Cell extends Rectangle{
 	
 	public Cell(int x, int y) {
-		this.x = x;
-		this.y = y;
+		super(x, y, 35, 35);
 	}
 	
 	public void paint(Graphics g, Boolean highlighted) {
@@ -21,14 +15,12 @@ public class Cell {
 		g.drawRect(x, y, width, height);		
 	}
 	
+	@Override
 	public boolean contains(Point target) {
 		if (target == null)
 			return false;
 		else {
-			return target.x > x 
-				&& target.x < x + width 
-				&& target.y > y 
-				&& target.y < y + height;
+			return super.contains(target);
 		}
 	}
 }
