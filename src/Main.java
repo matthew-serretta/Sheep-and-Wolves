@@ -1,29 +1,27 @@
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import java.awt.Graphics;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Point;
+import java.awt.*;
 
 
 public class Main extends JFrame implements Runnable{
 	
 	private class Canvas extends JPanel{
 		
-		Grid grid;
-			
+		private Grid grid;
+		private Stage stage;
+		
 		public Canvas() {
 			setPreferredSize(new Dimension(1280, 720));
 			
 			grid = new Grid();
+			stage = new Stage();
 		}
 		
 		@Override
 		public void paint(Graphics g) {
-			grid.paint(g, getMousePosition());		
-		}
-		
-		
+			grid.paint(g, getMousePosition());
+			stage.paint(g, getMousePosition());
+		}	
 	}
 	
     public static void main(String[] args) {
@@ -42,7 +40,5 @@ public class Main extends JFrame implements Runnable{
     public void run() {
     	while(true)
     		this.repaint();
-    }
-    
-    
+    }    
 }
