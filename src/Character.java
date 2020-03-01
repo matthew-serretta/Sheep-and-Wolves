@@ -1,7 +1,7 @@
 import java.awt.*;
 import java.util.Optional;
 
-public abstract class Character {
+public abstract class Character implements bos.GamePiece<Cell>{
 	Optional<Color> display;
 	Cell location;
 	
@@ -15,5 +15,13 @@ public abstract class Character {
 			g.setColor(display.get());
 			g.fillOval(location.x + location.width/4,  location.y + location.height/4,  location.width/2,  location.height/2);			
 		}
+	}
+	
+	public Cell getLocationOf() {
+		return location;
+	}
+	
+	public void setLocationOf(Cell c) {
+		location = c;
 	}
 }
