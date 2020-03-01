@@ -22,8 +22,6 @@ public class Stage {
 		
 		moves = new ArrayList<bos.RelativeMove>();
 		moves.add(new bos.MoveUp(grid, sheep));
-		moves.add(new bos.MoveUp(grid, sheep));
-		moves.add(new bos.MoveUp(grid, sheep));
 		
 		timeOfLastMove = Instant.now();
 	}
