@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import bos.GamePiece;
 import bos.RelativeMove;
@@ -25,12 +26,7 @@ public class Grid implements bos.GameBoard<Cell>{
 	}
 	
 	public void paint(Graphics g, Point mousePosition) {
-		for(int x = 0; x < cells.length; x++) {
-			for(int y = 0; y< cells.length; y++) {
-				Cell thisCell = cells[x][y];
-				thisCell.paint(g, thisCell.contains(mousePosition));
-			}
-		}
+		doToEachCell( (c) -> c.paint(g,  c.contains(mousePosition)));
 	}
 	
 	public Cell getRandomCell() {
@@ -52,6 +48,14 @@ public class Grid implements bos.GameBoard<Cell>{
 		}
 		return null;
 	}
+	
+	private void doToEachCell(Consumer<Cell> func){
+      for(int y = 0; y < 20; y++) {
+    	  for(int x = 0; x < 20; x++) {
+    		  func.accept(cells[y][x]);
+    	  }
+      }
+    }
 
 	@Override
 	public Optional<Cell> above(Cell cell) {
