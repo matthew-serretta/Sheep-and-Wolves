@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.util.Optional;
 
+import bos.RelativeMove;
+
 public abstract class Character implements bos.GamePiece<Cell>{
 	Optional<Color> display;
 	Cell location;
@@ -24,4 +26,6 @@ public abstract class Character implements bos.GamePiece<Cell>{
 	public void setLocationOf(Cell c) {
 		location = c;
 	}
+	
+	public abstract RelativeMove aiMove(Stage stage);
 }

@@ -1,17 +1,19 @@
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import bos.RelativeMove;
+
 import java.time.*;
 
 public class Stage {
-	private Grid grid;
-	private Character sheep;
-	private Character shepherd;
-	private Character wolf;
-
-	private List<bos.RelativeMove> moves;
-
-	private Instant timeOfLastMove;
+	protected Grid grid;
+	protected Character sheep;
+	protected Character shepherd;
+	protected Character wolf;
+	
+	private Instant timeOfLastMove = Instant.now();
+	private java.util.List<RelativeMove> moves;
 
 	public Stage() {
 		grid = new Grid();
@@ -19,28 +21,22 @@ public class Stage {
 		shepherd = new Shepherd(grid.getRandomCell());
 		wolf = new Wolf(grid.getRandomCell());
 
-		moves = new ArrayList<bos.RelativeMove>();
-		moves.add(new bos.MoveUp(grid, sheep));
-		moves.add(new bos.MoveUp(grid, sheep));
-		moves.add(new bos.MoveUp(grid, sheep));
-
-		timeOfLastMove = Instant.now();
+		
 	}
 
-	public void update() {
-		try {
-			Thread.sleep(20);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		if (moves.size() > 0 && timeOfLastMove.plus(Duration.ofSeconds(2)).isBefore(Instant.now())) {
-			timeOfLastMove = Instant.now();
-			moves.remove(0).perform();
-
-		} else if (moves.size() == 0 && timeOfLastMove.plus(Duration.ofSeconds(20)).isBefore(Instant.now())) {
+	public void update() {	
+		if(sheep.location == shepherd.location) {
+			System.out.println("Sheep is safe!");
 			System.exit(0);
-		}
+		} else if (sheep.location == shepherd.location) {
+			System.out.println("Sheep is dead!");
+			System.exit(0);
+		} else if (timeOfLastMove.plus(Duration.ofSeconds(2)).isBefore(Instant.now())) {
+			timeOfLastMove = Instant.now();
+			sheep.aiMove(this).perform();
+			wolf.aiMove(this).perform();
+			shepherd.aiMove(this).perform();
+		} 
 	}
 
 	public void paint(Graphics g, Point mouseLocation) {
