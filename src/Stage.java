@@ -13,29 +13,33 @@ public class Stage {
 	protected Character wolf;
 	
 	private Instant timeOfLastMove = Instant.now();
-	private java.util.List<RelativeMove> moves;
+	private ArrayList<Character> allCharacters;
 
 	public Stage() {
 		grid = new Grid();
-		sheep = new Sheep(grid.getRandomCell());
-		shepherd = new Shepherd(grid.getRandomCell());
-		wolf = new Wolf(grid.getRandomCell());
-
+		shepherd = new Shepherd(grid.getRandomCell(), new StandStill());
+		sheep = new Sheep(grid.getRandomCell(), new MoveTowards(shepherd));
+		wolf = new Wolf(grid.getRandomCell(), new MoveTowards(sheep));	
+		
+		allCharacters = new ArrayList<Character>();
+		allCharacters.add(sheep); allCharacters.add(shepherd); allCharacters.add(wolf); 
 		
 	}
 
 	public void update() {	
-		if(sheep.location == shepherd.location) {
-			System.out.println("Sheep is safe!");
-			System.exit(0);
-		} else if (sheep.location == shepherd.location) {
-			System.out.println("Sheep is dead!");
-			System.exit(0);
-		} else if (timeOfLastMove.plus(Duration.ofSeconds(2)).isBefore(Instant.now())) {
+		if (timeOfLastMove.plus(Duration.ofSeconds(1)).isBefore(Instant.now())) {
+			if (sheep.location == shepherd.location) {
+				System.out.println("Sheep is safe!");
+				System.exit(0);
+			} else if (sheep.location == wolf.location) {
+				System.out.println("Sheep is dead!");
+				System.exit(0);
+			} else if (sheep.location.x == sheep.location.y) {
+				sheep.setBehaviour(new StandStill());
+				shepherd.setBehaviour(new MoveTowards(sheep));
+			}
+			allCharacters.forEach((c) -> c.aiMove(this).perform());
 			timeOfLastMove = Instant.now();
-			sheep.aiMove(this).perform();
-			wolf.aiMove(this).perform();
-			shepherd.aiMove(this).perform();
 		} 
 	}
 

@@ -6,10 +6,12 @@ import bos.RelativeMove;
 public abstract class Character implements bos.GamePiece<Cell>{
 	Optional<Color> display;
 	Cell location;
+	Behaviour behaviour;
 	
-	public Character(Cell location) {
+	public Character(Cell location, Behaviour behaviour) {
 		this.location = location;
 		this.display = Optional.empty();
+		this.behaviour = behaviour;
 	}
 	
 	public void paint(Graphics g) {
@@ -20,12 +22,18 @@ public abstract class Character implements bos.GamePiece<Cell>{
 	}
 	
 	public Cell getLocationOf() {
-		return location;
+		return this.location;
 	}
 	
 	public void setLocationOf(Cell c) {
-		location = c;
+		this.location = c;
 	}
 	
-	public abstract RelativeMove aiMove(Stage stage);
+	public void setBehaviour(Behaviour behaviour) {
+		this.behaviour = behaviour;
+	}
+	
+	public RelativeMove aiMove(Stage stage) {
+		return behaviour.chooseMove(stage, this);
+	}
 }

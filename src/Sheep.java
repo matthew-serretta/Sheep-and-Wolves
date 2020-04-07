@@ -8,17 +8,8 @@ import bos.RelativeMove;
 
 public class Sheep extends Character{
 	
-	public Sheep(Cell location) {
-		super(location);
+	public Sheep(Cell location, Behaviour behaviour) {
+		super(location, behaviour);
 		display = Optional.of(Color.WHITE);
-	}
-
-	@Override
-	public RelativeMove aiMove(Stage stage) {
-		List<RelativeMove> possibles = stage.grid.movesBetween(this.location, stage.shepherd.location, this);
-		if(possibles.size() == 0)
-			return new NoMove(stage.grid, this);
-		else 
-			return possibles.get(0);
 	}
 }

@@ -7,3 +7,6 @@
 /Shepherd.class
 /Stage.class
 /Wolf.class
+/Behaviour.class
+/MoveTowards.class
+/StandStill.class
