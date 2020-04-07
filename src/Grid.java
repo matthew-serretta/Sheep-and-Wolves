@@ -83,28 +83,28 @@ public class Grid implements bos.GameBoard<Cell>{
 
 	@Override
 	public Optional<Cell> above(Cell cell) {
-		safeFindAmongstCells((c) -> c == cell)
+		return safeFindAmongstCells((c) -> c == cell)
 				.filter((pair) -> pair.first > 0)
 				.map((pair) -> cells[pair.first - 1][pair.second]);
 	}
 
 	@Override
 	public Optional<Cell> below(Cell cell) {
-		safeFindAmongstCells((c) -> c == cell)
+		return safeFindAmongstCells((c) -> c == cell)
 				.filter((pair) -> pair.first < 19)
 				.map((pair) -> cells[pair.first + 1][pair.second]);
 	}
 
 	@Override
 	public Optional<Cell> leftOf(Cell cell) {
-		safeFindAmongstCells((c) -> c == cell)
+		return safeFindAmongstCells((c) -> c == cell)
 				.filter((pair) -> pair.second > 0)
 				.map((pair) -> cells[pair.first][pair.second - 1]);
 	}
 	
 	@Override
 	public Optional<Cell> rightOf(Cell cell) {
-		safeFindAmongstCells((c) -> c == cell)
+		return safeFindAmongstCells((c) -> c == cell)
 				.filter((pair) -> pair.second < 19)
 				.map((pair) -> cells[pair.first][pair.second + 1]);
 	}
