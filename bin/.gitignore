@@ -10,3 +10,6 @@
 /Behaviour.class
 /MoveTowards.class
 /StandStill.class
+/Player.class
+/KeyObserver.class
+/KeyObservable.class
