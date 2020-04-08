@@ -33,7 +33,7 @@ public abstract class Character implements bos.GamePiece<Cell>{
 		this.behaviour = behaviour;
 	}
 	
-	public RelativeMove aiMove(Stage stage) {
-		return behaviour.chooseMove(stage, this);
+	public RelativeMove aiMove() {
+		return behaviour.chooseMove(this);
 	}
 }

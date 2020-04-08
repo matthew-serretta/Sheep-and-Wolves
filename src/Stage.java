@@ -7,6 +7,8 @@ import bos.RelativeMove;
 import java.time.*;
 
 public class Stage extends KeyObservable {
+	private static Stage singleton = null;
+	
 	protected Grid grid;
 	protected Character sheep;
 	protected Character shepherd;
@@ -14,10 +16,8 @@ public class Stage extends KeyObservable {
 	protected Player player;
 	private ArrayList<Character> allCharacters;
 
-	private Instant timeOfLastMove = Instant.now();
-
-	public Stage() {
-		grid = new Grid();
+	private Stage() {
+		grid = Grid.getGrid();
 		shepherd = new Shepherd(grid.getRandomCell(), new StandStill());
 		sheep = new Sheep(grid.getRandomCell(), new MoveTowards(shepherd));
 		wolf = new Wolf(grid.getRandomCell(), new MoveTowards(sheep));
@@ -30,6 +30,15 @@ public class Stage extends KeyObservable {
 		allCharacters.add(shepherd);
 		allCharacters.add(wolf);
 
+	}
+	
+	public static Stage getStage() {
+		synchronized(Stage.class) {
+			if (singleton == null) {
+				singleton = new Stage();
+			}
+		}
+		return singleton;
 	}
 
 	public void update() {
@@ -44,9 +53,8 @@ public class Stage extends KeyObservable {
 				sheep.setBehaviour(new StandStill());
 				shepherd.setBehaviour(new MoveTowards(sheep));
 			}
-			allCharacters.forEach((c) -> c.aiMove(this).perform());
+			allCharacters.forEach((c) -> c.aiMove().perform());
 			player.startMove();
-			timeOfLastMove = Instant.now();
 		}
 	}
 

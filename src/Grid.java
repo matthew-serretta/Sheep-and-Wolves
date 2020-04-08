@@ -14,6 +14,8 @@ import bos.Pair;
 import bos.RelativeMove;
 
 public class Grid implements bos.GameBoard<Cell>{
+	
+	private static Grid singleton = null;
 
 	private Cell [][] cells = new Cell [20][20];
 	
@@ -24,12 +26,21 @@ public class Grid implements bos.GameBoard<Cell>{
 	private int x;
 	private int y;
 	
-	public Grid() {
+	private Grid() {
 		for(int i=0; i<cells.length; i++) {
 			for (int j=0; j<cells.length; j++) {
 				cells[i][j] = new Cell(MARGIN + j * HEIGHT, MARGIN + i * WIDTH);					
 			}
 		}
+	}
+	
+	public static Grid getGrid() {
+		synchronized(Grid.class) {
+			if (singleton == null) {
+				singleton = new Grid();
+			}
+		}
+		return singleton;
 	}
 	
 	public void paint(Graphics g, Point mousePosition) {

@@ -14,8 +14,8 @@ public class Main extends JFrame implements Runnable{
 		public Canvas() {
 			setPreferredSize(new Dimension(1280, 720));
 			
-			grid = new Grid();
-			stage = new Stage();
+			grid = Grid.getGrid();
+			stage = Stage.getStage();
 		}
 		
 		@Override
@@ -26,7 +26,7 @@ public class Main extends JFrame implements Runnable{
 
 		@Override
 		public void keyTyped(KeyEvent e) {
-			stage.notifyAll(e.getKeyChar(), stage.grid);
+			stage.notifyAll(e.getKeyChar(), Grid.getGrid());
 			}
 
 		@Override
