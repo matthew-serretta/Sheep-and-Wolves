@@ -2,6 +2,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import bos.Rabbit;
 import bos.RelativeMove;
 
 import java.time.*;
@@ -14,6 +15,7 @@ public class Stage extends KeyObservable {
 	protected Character shepherd;
 	protected Character wolf;
 	protected Player player;
+	protected RabbitAdapter rabbit;
 	private ArrayList<Character> allCharacters;
 
 	private Stage() {
@@ -21,7 +23,7 @@ public class Stage extends KeyObservable {
 		shepherd = new Shepherd(grid.getRandomCell(), new StandStill());
 		sheep = new Sheep(grid.getRandomCell(), new MoveTowards(shepherd));
 		wolf = new Wolf(grid.getRandomCell(), new MoveTowards(sheep));
-
+		rabbit = new RabbitAdapter(grid.getRandomCell(), new MoveTowards(shepherd));
 		player = new Player(grid.getRandomCell());
 		this.register(player);
 
@@ -29,6 +31,7 @@ public class Stage extends KeyObservable {
 		allCharacters.add(sheep);
 		allCharacters.add(shepherd);
 		allCharacters.add(wolf);
+		allCharacters.add(rabbit);
 
 	}
 	
@@ -63,6 +66,7 @@ public class Stage extends KeyObservable {
 		sheep.paint(g);
 		shepherd.paint(g);
 		wolf.paint(g);
+		rabbit.paint(g);
 		player.paint(g);
 	}
 }

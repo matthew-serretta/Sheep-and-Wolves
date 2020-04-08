@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import bos.GameBoard;
 import bos.GamePiece;
 import bos.MoveDown;
 import bos.MoveLeft;
@@ -13,7 +14,7 @@ import bos.MoveUp;
 import bos.Pair;
 import bos.RelativeMove;
 
-public class Grid implements bos.GameBoard<Cell>{
+public class Grid implements GameBoard<Cell>{
 	
 	private static Grid singleton = null;
 
