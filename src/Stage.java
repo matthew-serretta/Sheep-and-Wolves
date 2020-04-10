@@ -2,6 +2,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import bos.MoveRandomly;
 import bos.Rabbit;
 import bos.RelativeMove;
 
@@ -16,6 +17,7 @@ public class Stage extends KeyObservable {
 	protected Character wolf;
 	protected Player player;
 	protected RabbitAdapter rabbit;
+	public Runnable rabbitMovement;
 	private ArrayList<Character> allCharacters;
 
 	private Stage() {
@@ -23,7 +25,8 @@ public class Stage extends KeyObservable {
 		shepherd = new Shepherd(grid.getRandomCell(), new StandStill());
 		sheep = new Sheep(grid.getRandomCell(), new MoveTowards(shepherd));
 		wolf = new Wolf(grid.getRandomCell(), new MoveTowards(sheep));
-		rabbit = new RabbitAdapter(grid.getRandomCell(), new MoveTowards(shepherd));
+		rabbit = new RabbitAdapter(grid.getRandomCell());
+		rabbitMovement = new RabbitMovementThread(rabbit);
 		player = new Player(grid.getRandomCell());
 		this.register(player);
 
@@ -45,6 +48,8 @@ public class Stage extends KeyObservable {
 	}
 
 	public void update() {
+		if (rabbit.nextMoves.size() < 10)
+			new Thread(rabbitMovement).start();
 		if (!player.inMove()) {
 			if (sheep.location == shepherd.location) {
 				System.out.println("Sheep is safe!");
@@ -56,7 +61,7 @@ public class Stage extends KeyObservable {
 				sheep.setBehaviour(new StandStill());
 				shepherd.setBehaviour(new MoveTowards(sheep));
 			}
-			allCharacters.forEach((c) -> c.aiMove().perform());
+			allCharacters.forEach((c) -> c.aiMove().perform());			
 			player.startMove();
 		}
 	}
