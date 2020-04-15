@@ -1,15 +1,15 @@
-import java.awt.*;
+import java.io.File;
 import java.util.Optional;
-import java.util.List;
-
-import bos.MoveRandomly;
-import bos.NoMove;
-import bos.RelativeMove;
+import javax.imageio.ImageIO;
 
 public class Sheep extends Character{
 	
 	public Sheep(Cell location, Behaviour behaviour) {
 		super(location, behaviour);
-		display = Optional.of(Color.WHITE);
+		try{
+            display = Optional.of(ImageIO.read(new File("sheep.png")));
+        } catch (Exception e){
+            display = Optional.empty();
+        }
 	}
 }

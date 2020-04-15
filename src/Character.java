@@ -3,8 +3,9 @@ import java.util.Optional;
 
 import bos.RelativeMove;
 
+//Character class is the parent class to characters such as Sheep, Shepherd and Wolf
 public abstract class Character implements bos.GamePiece<Cell>{
-	Optional<Color> display;
+	Optional<Image> display;
 	Cell location;
 	Behaviour behaviour;
 	
@@ -14,10 +15,10 @@ public abstract class Character implements bos.GamePiece<Cell>{
 		this.behaviour = behaviour;
 	}
 	
+	//paint function is used to 'paint' the image of the character onto the java display
 	public void paint(Graphics g) {
 		if(display.isPresent()) {
-			g.setColor(display.get());
-			g.fillOval(location.x + location.width/4,  location.y + location.height/4,  location.width/2,  location.height/2);			
+			g.drawImage(display.get(), location.x+2, location.y+2, 31, 31, null, null);
 		}
 	}
 	
@@ -33,6 +34,7 @@ public abstract class Character implements bos.GamePiece<Cell>{
 		this.behaviour = behaviour;
 	}
 	
+	//aiMove function is used to return the character's next move based on their behaviour
 	public RelativeMove aiMove() {
 		return behaviour.chooseMove(this);
 	}

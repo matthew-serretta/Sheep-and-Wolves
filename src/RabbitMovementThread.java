@@ -1,9 +1,11 @@
+import bos.Rabbit;
 import bos.MoveDown;
 import bos.MoveLeft;
 import bos.MoveRight;
 import bos.MoveUp;
-import bos.Rabbit;
 
+//used to create a new thread to determine the rabbit's next move because this takes a long time
+//implements the adapter design pattern
 public class RabbitMovementThread implements Runnable{
 	private RabbitAdapter rabbit;
 	private Rabbit adaptee = new Rabbit();
@@ -12,6 +14,7 @@ public class RabbitMovementThread implements Runnable{
 		this.rabbit = rabbit;
 	}
 
+	//calls original rabbit class to determine it's next move and adds it to the adapter's list of next moves
 	@Override
 	public void run() {
 		switch (adaptee.nextMove()) {

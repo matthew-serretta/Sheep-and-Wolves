@@ -14,18 +14,18 @@ import bos.MoveUp;
 import bos.Pair;
 import bos.RelativeMove;
 
+//A grid is made up of Cell objects to draw the game's grid/game board
 public class Grid implements GameBoard<Cell>{
 	
 	private static Grid singleton = null;
-
-	private Cell [][] cells = new Cell [20][20];
 	
 	private static final int MARGIN = 10;
 	private static final int WIDTH = 35;
-	private static final int HEIGHT = 35;
-	
-	private int x;
-	private int y;
+	private static final int HEIGHT = WIDTH;
+	private static int gridWidth = 20;
+	private static int gridHeight = gridWidth;
+
+	private Cell [][] cells = new Cell [gridWidth][gridHeight];
 	
 	private Grid() {
 		for(int i=0; i<cells.length; i++) {
@@ -35,6 +35,7 @@ public class Grid implements GameBoard<Cell>{
 		}
 	}
 	
+	//Singleton design pattern to ensure there is only one grid
 	public static Grid getGrid() {
 		synchronized(Grid.class) {
 			if (singleton == null) {
@@ -44,33 +45,59 @@ public class Grid implements GameBoard<Cell>{
 		return singleton;
 	}
 	
-	public void paint(Graphics g, Point mousePosition) {
-		doToEachCell( (c) -> c.paint(g,  c.contains(mousePosition)));
-	}
-	
-	public Cell getRandomCell() {
-		java.util.Random rand = new java.util.Random();
-		return cells[rand.nextInt(cells.length)][rand.nextInt(cells.length)];
-	}
-	
+	//basic getter
 	public Cell cellLocation(int x, int y) {
 		return cells[x][y];
 	}
 	
-	private bos.Pair<Integer, Integer> indexOfCell(Cell c) {
-		for(int y = 0; y< 20; y++) {
-			for(int x = 0; x < 20; x++) {
+	//basic getter
+	public int gridWidth() {
+		return gridWidth;
+	}
+	
+	//basic getter
+	public int gridHeight() {
+		return gridHeight;
+	}
+	
+	//paint function is used to 'paint' the image of the grid onto the java display
+	public void paint(Graphics g, Point mousePosition) {
+		doToEachCell( (c) -> c.paint(g,  c.contains(mousePosition)));
+	}
+	
+	//returns a random location on the grid
+	public Cell getRandomCell() {
+		java.util.Random rand = new java.util.Random();
+		return cells[rand.nextInt(cells.length)][rand.nextInt(cells.length)];
+	}	
+	
+	//function used to simplify looping through grid's cells
+	//e.g. paint all cells
+	private void doToEachCell(Consumer<Cell> func){
+      for(int y = 0; y < gridHeight; y++) {
+    	  for(int x = 0; x < gridWidth; x++) {
+    		  func.accept(cells[y][x]);
+    	  }
+      }
+    }
+	
+	//Was used for previous methods before more generic findAmongstCell function was created
+	//Not deleted as it may well be useful in the future
+	private Pair<Integer, Integer> indexOfCell(Cell c) {
+		for(int y = 0; y < gridHeight; y++) {
+			for(int x = 0; x < gridWidth; x++) {
 				if (cells[y][x] == c) {
-					return new bos.Pair<Integer, Integer>(y,  x);
+					return new Pair(y,  x);
 				}
 			}
 		}
 		return null;
 	}
 	
+	//returns the index of the grid cell that matches the predicate
 	private Pair<Integer, Integer> findAmongstCells(Predicate<Cell> predicate) {
-		for(int y = 0; y< 20; y++) {
-			for(int x = 0; x < 20; x++) {
+		for(int y = 0; y < gridHeight; y++) {
+			for(int x = 0; x < gridWidth; x++) {
 				if (predicate.test(cells[y][x])) {
 					return new Pair(y,  x);
 				}
@@ -79,9 +106,11 @@ public class Grid implements GameBoard<Cell>{
 		return null;
 	}
 	
+	//safe version of findAmongstCells as it uses optionals in case searching for non-existent Cell
+	//e.g. there is no cell above the top row, therefore a character in the top row can't move up
 	private Optional<Pair<Integer, Integer>> safeFindAmongstCells(Predicate<Cell> predicate) {
-		for(int y = 0; y< 20; y++) {
-			for(int x = 0; x < 20; x++) {
+		for(int y = 0; y < gridHeight; y++) {
+			for(int x = 0; x < gridWidth; x++) {
 				if (predicate.test(cells[y][x])) {
 					return Optional.of(new Pair(y,  x));
 				}
@@ -89,15 +118,8 @@ public class Grid implements GameBoard<Cell>{
 		}
 		return null;
 	}
-	
-	private void doToEachCell(Consumer<Cell> func){
-      for(int y = 0; y < 20; y++) {
-    	  for(int x = 0; x < 20; x++) {
-    		  func.accept(cells[y][x]);
-    	  }
-      }
-    }
 
+	//returns the Cell above a given cell
 	@Override
 	public Optional<Cell> above(Cell cell) {
 		return safeFindAmongstCells((c) -> c == cell)
@@ -105,6 +127,7 @@ public class Grid implements GameBoard<Cell>{
 				.map((pair) -> cells[pair.first - 1][pair.second]);
 	}
 
+	//returns the Cell below a given cell
 	@Override
 	public Optional<Cell> below(Cell cell) {
 		return safeFindAmongstCells((c) -> c == cell)
@@ -112,13 +135,15 @@ public class Grid implements GameBoard<Cell>{
 				.map((pair) -> cells[pair.first + 1][pair.second]);
 	}
 
+	//returns the Cell to the left of a given cell
 	@Override
 	public Optional<Cell> leftOf(Cell cell) {
 		return safeFindAmongstCells((c) -> c == cell)
 				.filter((pair) -> pair.second > 0)
 				.map((pair) -> cells[pair.first][pair.second - 1]);
 	}
-	
+
+	//returns the Cell to the right of a given cell
 	@Override
 	public Optional<Cell> rightOf(Cell cell) {
 		return safeFindAmongstCells((c) -> c == cell)
@@ -126,6 +151,8 @@ public class Grid implements GameBoard<Cell>{
 				.map((pair) -> cells[pair.first][pair.second + 1]);
 	}
 
+	//returns the moves between the 'from' and 'to' Cells for a given character
+	//very basic, moves horizontally then vertically
 	@Override
 	public List<RelativeMove> movesBetween(Cell from, Cell to, GamePiece<Cell> mover) {
 		Pair<Integer, Integer> fromIndex = findAmongstCells((c) -> c == from);

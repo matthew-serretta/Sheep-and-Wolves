@@ -2,6 +2,8 @@ import java.awt.*;
 
 import bos.GameBoard;
 
+//player class serves no purpose other than to allow a player to 'interact with the game'
+//this is to allow demonstration of the observer design pattern
 public class Player implements KeyObserver{
 	
 	public Cell location;
@@ -12,6 +14,7 @@ public class Player implements KeyObserver{
 		inMove = false;
 	}
 	
+	//paint function is used to 'paint' the image of the player onto the java display
 	public void paint(Graphics g) {
 		g.setColor(Color.ORANGE);
 		g.fillOval(location.x + location.width/4,  location.y + location.height/4,  location.width/2,  location.height/2);			
@@ -25,6 +28,7 @@ public class Player implements KeyObserver{
 		return inMove;
 	}
 	
+	//when player is notified that a movement key (w,a,s,d) is pressed, move them accordingly
 	@Override
 	public void notify(char c, GameBoard<Cell> gb) {
 		if (inMove) {
