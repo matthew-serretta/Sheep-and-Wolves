@@ -9,10 +9,16 @@ public class Cell extends Rectangle{
 	
 	//paint function is used to 'paint' the image of the cell onto the java display
 	public void paint(Graphics g, Boolean highlighted) {
+		//paint the cell with inside color
 		if (highlighted){
-			g.setColor(Color.LIGHT_GRAY);
+			g.setColor(new Color(0,153,51));
 			g.fillRect(x, y, width, height);
 		}
+		else {
+			g.setColor(new Color(130,212,89));
+			g.fillRect(x, y, 35, 35);
+		}
+		//paint the cell border
 		g.setColor(Color.BLACK);
 		g.drawRect(x, y, width, height);		
 	}

@@ -50,13 +50,13 @@ public class Stage extends KeyObservable {
 		if (!player.inMove()) {
 			//if the sheep is safe, end the game
 			if (sheep.location == player.location) {
-				System.out.println("Sheep is safe!");
+				System.out.println("the sheep is safe!");
 				System.exit(0);
 			} 
 			
 			//if the sheep is dead, end the game
 			else if (sheep.location == wolf.location) {
-				System.out.println("Sheep is dead!");
+				System.out.println("the sheep is dead!");
 				System.exit(1);
 			} 
 			
@@ -76,7 +76,7 @@ public class Stage extends KeyObservable {
 				if (wolf.location == rabbit.location) {
 					aiCharacters.remove(rabbit);
 					rabbit.die();
-					System.out.println("Wolf has eaten the Rabbit!");
+					System.out.println("the wolf has eaten the rabbit!");
 					wolf.setBehaviour(new MoveTowards(sheep));
 				}	
 			}
