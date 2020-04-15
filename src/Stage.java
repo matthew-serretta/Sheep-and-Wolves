@@ -7,7 +7,6 @@ public class Stage extends KeyObservable {
 	
 	protected Grid grid;
 	protected Character sheep;
-	protected Character shepherd;
 	protected Character wolf;
 	protected Player player;
 	protected RabbitAdapter rabbit;
@@ -16,17 +15,15 @@ public class Stage extends KeyObservable {
 
 	private Stage() {
 		grid = Grid.getGrid();
-		shepherd = new Shepherd(grid.getRandomCell(), new StandStill());
-		sheep = new Sheep(grid.getRandomCell(), new MoveTowards(shepherd));
+		player = new Player(grid.getRandomCell());
+		this.register(player);
+		sheep = new Sheep(grid.getRandomCell(), new MoveTowards(player));
 		wolf = new Wolf(grid.getRandomCell(), new MoveTowards(sheep));
 		rabbit = new RabbitAdapter(grid.getRandomCell());
 		rabbitMovement = new RabbitMovementThread(rabbit);
-		player = new Player(grid.getRandomCell());
-		this.register(player);
 
 		aiCharacters = new ArrayList<Character>();
 		aiCharacters.add(sheep);
-		aiCharacters.add(shepherd);
 		aiCharacters.add(wolf);
 		aiCharacters.add(rabbit);
 
@@ -52,7 +49,7 @@ public class Stage extends KeyObservable {
 		
 		if (!player.inMove()) {
 			//if the sheep is safe, end the game
-			if (sheep.location == shepherd.location) {
+			if (sheep.location == player.location) {
 				System.out.println("Sheep is safe!");
 				System.exit(0);
 			} 
@@ -63,14 +60,28 @@ public class Stage extends KeyObservable {
 				System.exit(1);
 			} 
 			
-			//if the sheep is on the diagonal from top left to bottom right
-			//swap sheep and shepherd behaviours
+			//if the sheep is on the diagonal from top left to bottom right, stop it from moving
 			//this serves no in game purpose, only there to demonstrate behaviour usability
-			else if (sheep.location.x == sheep.location.y) {
+			if (sheep.location.x == sheep.location.y) {
 				sheep.setBehaviour(new StandStill());
-				shepherd.setBehaviour(new MoveTowards(sheep));
 			}
 			
+			if (rabbit.isAlive) {
+				//if the wolf is within 5 moves from the rabbit, it will chase the rabbit
+				if (Grid.getGrid().movesBetween(wolf.location, rabbit.location, wolf).size() < 5) {
+					wolf.setBehaviour(new MoveTowards(rabbit));
+				}
+				
+				//if wolf catches the rabbit...
+				if (wolf.location == rabbit.location) {
+					aiCharacters.remove(rabbit);
+					rabbit.die();
+					System.out.println("Wolf has eaten the Rabbit!");
+					wolf.setBehaviour(new MoveTowards(sheep));
+				}	
+			}
+			
+			//perform character moves
 			aiCharacters.forEach((c) -> c.aiMove().perform());			
 			player.startMove();
 		}
