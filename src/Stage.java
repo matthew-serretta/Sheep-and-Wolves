@@ -10,7 +10,6 @@ public class Stage extends KeyObservable {
 	protected Character wolf;
 	protected Player player;
 	protected RabbitAdapter rabbit;
-	public Runnable rabbitMovement;
 	private ArrayList<Character> aiCharacters;
 
 	private Stage() {
@@ -20,7 +19,6 @@ public class Stage extends KeyObservable {
 		sheep = new Sheep(grid.getRandomCell(), new MoveTowards(player));
 		wolf = new Wolf(grid.getRandomCell(), new MoveTowards(sheep));
 		rabbit = new RabbitAdapter(grid.getRandomCell());
-		rabbitMovement = new RabbitMovementThread(rabbit);
 
 		aiCharacters = new ArrayList<Character>();
 		aiCharacters.add(sheep);
@@ -44,8 +42,10 @@ public class Stage extends KeyObservable {
 		
 		//if the rabbit hasn't calculated enough moves, 
 		//start making threads to make sure there are moves available
-		if (rabbit.nextMoves.size() < 10)
-			new Thread(rabbitMovement).start();
+		//Thread.activeCount will not truly limit to 10 threads but close enough to achieve its purpose
+		//(preventing 1000's of threads)
+		if (rabbit.nextMoves.size() < 10 && java.lang.Thread.activeCount() > 10)
+			new Thread(new RabbitMovementThread(rabbit)).start();
 		
 		if (!player.inMove()) {
 			//if the sheep is safe, end the game
